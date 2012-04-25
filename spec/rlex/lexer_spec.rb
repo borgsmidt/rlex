@@ -1,6 +1,5 @@
 require 'spec_helper'
-require 'rlex/token'
-require 'rlex/lexer'
+require 'rlex'
 include Rlex
 
 describe Lexer do
