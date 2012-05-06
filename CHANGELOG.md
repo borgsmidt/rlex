@@ -1,5 +1,9 @@
 # Changes
 
+## Version 0.5.4
+
+Update gem spec to reflect development dependency on `rspec`
+
 ## Version 0.5.3
 
 Add `require` statements internally so `require 'rlex'` is sufficient to use

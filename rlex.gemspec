@@ -17,4 +17,6 @@ Gem::Specification.new do |gem|
   gem.name          = "rlex"
   gem.require_paths = ["lib"]
   gem.version       = Rlex::VERSION
+
+  gem.add_development_dependency "rspec"
 end
