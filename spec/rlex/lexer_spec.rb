@@ -64,5 +64,16 @@ describe Lexer do
       @lexer.next_token.should eq Token.new :word, "ifu"
       @lexer.next_token.should eq EOF_TOKEN
     end
+
+    it "should recognize keywords even if declared after rules which also match" do
+      @lexer.ignore /\s+/
+      @lexer.rule :word, /\w+/
+      @lexer.keyword :keyword
+      @lexer.start "word keyword keywordmore"
+      @lexer.next_token.should eq Token.new :word, "word"
+      @lexer.next_token.should eq Token.new :keyword, "keyword"
+      @lexer.next_token.should eq Token.new :word, "keywordmore"
+      @lexer.next_token.should eq EOF_TOKEN
+    end
   end
 end
