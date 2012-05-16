@@ -1,5 +1,9 @@
 # Changes
 
+## Version 0.6.0
+
+Produced tokens now include line number and column position of the matched text
+
 ## Version 0.5.4
 
 Update gem spec to reflect development dependency on `rspec`

@@ -100,10 +100,11 @@ module Rlex
     #
     def keyword(name = nil, kword)
       # @todo Validate the keyword name
-      name = kword if name == nil
-      pattern = Regexp.new(Regexp.escape kword.to_s)
+      kword_str = kword.to_s
+      name = kword.to_sym if name == nil
+      pattern = Regexp.new(Regexp.escape kword_str)
       rule name, pattern
-      @keywords[kword.to_s] = Token.new name.to_sym, kword.to_s
+      @keywords[kword_str] = Token.new name.to_sym, kword_str
       return name.to_sym
     end
 
@@ -117,6 +118,8 @@ module Rlex
     # @return [String] The specified input
     #
     def start(input)
+      @line = 1
+      @col = 0
       @scanner = StringScanner.new input
       return input
     end
@@ -134,9 +137,11 @@ module Rlex
       return next_token if ignore_prefix?
       rule = greediest_rule
       if rule
-        prefix = @scanner.scan(rule.pattern)
+        prefix = fetch_prefix_and_update_pos(rule.pattern)
         keyword = @keywords[prefix]
-        return keyword ? keyword : Token.new(rule.name, prefix)
+        type = keyword ? keyword.type : rule.name
+        token = keyword ? keyword.value : prefix
+        return Token.new(type, token, @line, @col - token.size)
       end
       raise "unexpected input <#{@scanner.peek(5)}>"
     end
@@ -149,7 +154,7 @@ module Rlex
     # @private
     def ignore_prefix?
       @ignored.each do |pattern|
-        prefix = @scanner.scan(pattern)
+        prefix = fetch_prefix_and_update_pos(pattern)
         return true if prefix
       end
       return false
@@ -167,6 +172,22 @@ module Rlex
         end
       end
       return r
+    end
+
+    # @private
+    def fetch_prefix_and_update_pos(pattern)
+      prefix = @scanner.scan(pattern)
+      return nil if not prefix
+      parts = prefix.split("\n", -1) # arg -1 allows empty lines
+      if parts.count == 1
+        # Staying on the same line
+        @col += prefix.length
+      else
+        # On a new line
+        @line += parts.count - 1
+        @col = parts.last.length
+      end
+      return prefix
     end
   end
 end

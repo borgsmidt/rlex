@@ -32,10 +32,9 @@ describe Lexer do
       @lexer.ignore /\s+/
       @lexer.keyword :special
       @lexer.start " \t\nspecialspecial   special   "
-      special = Token.new :special, "special"
-      @lexer.next_token.should eq special
-      @lexer.next_token.should eq special
-      @lexer.next_token.should eq special
+      @lexer.next_token.should eq Token.new(:special, "special", 2, 0)
+      @lexer.next_token.should eq Token.new(:special, "special", 2, 7)
+      @lexer.next_token.should eq Token.new(:special, "special", 2, 17)
       @lexer.next_token.should eq EOF_TOKEN
     end
 
@@ -43,10 +42,10 @@ describe Lexer do
       @lexer.ignore /\s+/
       @lexer.rule :word, /\w+/
       @lexer.start "sentence with four tokens"
-      @lexer.next_token.should eq Token.new :word, "sentence"
-      @lexer.next_token.should eq Token.new :word, "with"
-      @lexer.next_token.should eq Token.new :word, "four"
-      @lexer.next_token.should eq Token.new :word, "tokens"
+      @lexer.next_token.should eq Token.new(:word, "sentence", 1, 0)
+      @lexer.next_token.should eq Token.new(:word, "with", 1, 9)
+      @lexer.next_token.should eq Token.new(:word, "four", 1, 14)
+      @lexer.next_token.should eq Token.new(:word, "tokens", 1, 19)
       @lexer.next_token.should eq EOF_TOKEN
     end
 
@@ -57,11 +56,11 @@ describe Lexer do
       @lexer.keyword :rparen, ")"
       @lexer.rule :word, /\w+/
       @lexer.start "ifu ( if ) ifu"
-      @lexer.next_token.should eq Token.new :word, "ifu"
-      @lexer.next_token.should eq Token.new :lparen, "("
-      @lexer.next_token.should eq Token.new :if, "if"
-      @lexer.next_token.should eq Token.new :rparen, ")"
-      @lexer.next_token.should eq Token.new :word, "ifu"
+      @lexer.next_token.should eq Token.new(:word, "ifu", 1, 0)
+      @lexer.next_token.should eq Token.new(:lparen, "(", 1, 4)
+      @lexer.next_token.should eq Token.new(:if, "if", 1, 6)
+      @lexer.next_token.should eq Token.new(:rparen, ")", 1, 9)
+      @lexer.next_token.should eq Token.new(:word, "ifu", 1, 11)
       @lexer.next_token.should eq EOF_TOKEN
     end
 
@@ -70,9 +69,9 @@ describe Lexer do
       @lexer.rule :word, /\w+/
       @lexer.keyword :keyword
       @lexer.start "word keyword keywordmore"
-      @lexer.next_token.should eq Token.new :word, "word"
-      @lexer.next_token.should eq Token.new :keyword, "keyword"
-      @lexer.next_token.should eq Token.new :word, "keywordmore"
+      @lexer.next_token.should eq Token.new(:word, "word", 1, 0)
+      @lexer.next_token.should eq Token.new(:keyword, "keyword", 1, 5)
+      @lexer.next_token.should eq Token.new(:word, "keywordmore", 1, 13)
       @lexer.next_token.should eq EOF_TOKEN
     end
   end
