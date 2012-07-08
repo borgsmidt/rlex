@@ -98,10 +98,13 @@ module Rlex
     #
     # @return [Symbol] The name of the keyword
     #
-    def keyword(name = nil, kword)
+    def keyword(name, kword = nil)
       # @todo Validate the keyword name
+      
+      kword = name if kword == nil
       kword_str = kword.to_s
-      name = kword.to_sym if name == nil
+      name = name.to_sym
+
       pattern = Regexp.new(Regexp.escape kword_str)
       rule name, pattern
       @keywords[kword_str] = Token.new name.to_sym, kword_str
@@ -149,7 +152,7 @@ module Rlex
     private
 
     # @private
-    Rule = Struct.new :name, :pattern
+    const_set('Rule', Struct.new(:name, :pattern))
 
     # @private
     def ignore_prefix?
